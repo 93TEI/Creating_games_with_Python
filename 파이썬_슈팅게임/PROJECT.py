@@ -8,7 +8,6 @@ from pygame.locals import *
 pygame.init()
 pygame.mixer.init()
 
-
 pygame.mixer.music.load('project_resources/q.ogg')
 pygame.mixer.music.play(-1)
 w=1022
@@ -28,6 +27,7 @@ boss_rect = pygame.Rect(800,150,500,300)
 fire_rect = pygame.Rect(300,90,600,300)
 boss_disappear = False
 
+#폰트(남은시간을 위한)
 fontObj = pygame.font.Font('project_resources/DejaVuSans.ttf', 32)
 textSurfaceObj = fontObj.render(str(pygame.time.get_ticks()), True, (255,0,0))
 textRectObj = textSurfaceObj.get_rect()
@@ -48,11 +48,15 @@ health = pygame.image.load("project_resources/health.png")
 #사운드 LOAD
 hit = pygame.mixer.Sound("project_resources/explode.wav")
 
+#인트로를 위한 변수
 cnt1 = 0
 cnt2 = 0
 
+#프로그램 러닝,끝 구별 변수
 Run = 1
 CLK = 2
+
+#메인 루프
 while Run:
     screen.fill(0)
     for event in pygame.event.get():
@@ -103,18 +107,19 @@ while Run:
     else :
         screen.blit(Background2,(0,0))
         screen.blit(Boss,(800,61))
+    
+    #남은시간 표기
     textSurfaceObj = fontObj.render('Time : ' + str((25000 - pygame.time.get_ticks()) / 1000), True, (255,0,0))
     screen.blit(textSurfaceObj, textRectObj)
 
-            
+    #플레이어 설정         
     position = pygame.mouse.get_pos()
     angle = math.atan2(position[1]-(playerpos[1]+32),position[0]-(playerpos[0]+26))
     playerrot = pygame.transform.rotate(player, 360-angle*57.29)
     playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
     # fire_rect = pygame.Rect(Boss_Fire.get_rect())
     
-    
-
+    #미사일 구현
     for m in missiles:
         index = 0
         velx = math.cos(m[0])*10
@@ -133,23 +138,18 @@ while Run:
         bullrect = pygame.Rect(missile.get_rect())
         bullrect.right = m[1]
         bullrect.top = m[2]
-        
+        #이정준(보스)가 사라졌을 때는 미사일을 맞지 않음
         if boss_rect.colliderect(bullrect) and (boss_disappear == False) :
             hit.play()
             missiles.pop(index1)
             healthvalue -= random.randint(5,20)
             
         index1 += 1
+    #체력바
     screen.blit(healthbar, (800, 5))
     for health1 in range(healthvalue):
         screen.blit(health, (health1 + 803, 8))
-        
-    for p in players:
-        player_rect = pygame.Rect(player.get_rect())
-        player_rect.right = p[1]
-        player_rect.top = p[2]
-        
-        
+    #이정준(보스)가 사라지는 것은 랜덤으로 구현    
     if random.randint(1,1000) >985:
         if boss_disappear == False :
             boss_disappear = True
@@ -164,6 +164,7 @@ while Run:
     if event.type == KEYUP and event.key ==K_q:
         bossfire=False
     '''
+    #키 입력 이벤트
     for event in pygame.event.get():
         
         if event.type == KEYDOWN:
