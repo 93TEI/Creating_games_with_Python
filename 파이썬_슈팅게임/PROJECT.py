@@ -22,9 +22,11 @@ FPS_CLOCK = pygame.time.Clock()
 keys = [False, False, False, False]
 healthvalue = 194
 missiles=[]
+players=[]
 player_hp = 3 #3번 맞으면 죽는걸로
 boss_rect = pygame.Rect(800,150,500,300)
 fire_rect = pygame.Rect(300,90,600,300)
+boss_disappear = False
 
 #이미지 LOAD
 Background = pygame.image.load('project_resources/1.png')
@@ -91,7 +93,12 @@ while Run:
         else:
             FPS_CLOCK.tick(8)
             
-    screen.blit(Background2,(0,0))
+    if boss_disappear == True :
+        screen.blit(Background2,(0,0))
+    else :
+        screen.blit(Background2,(0,0))
+        screen.blit(Boss,(800,61))
+        
     
  
 
@@ -100,8 +107,9 @@ while Run:
     angle = math.atan2(position[1]-(playerpos[1]+32),position[0]-(playerpos[0]+26))
     playerrot = pygame.transform.rotate(player, 360-angle*57.29)
     playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
-    fire_rect = pygame.Rect(Boss_Fire.get_rect())
-    player_rect = pygame.Rect(player.get_rect())
+    # fire_rect = pygame.Rect(Boss_Fire.get_rect())
+    
+    
 
     for m in missiles:
         index = 0
@@ -122,37 +130,36 @@ while Run:
         bullrect.right = m[1]
         bullrect.top = m[2]
         
-        if boss_rect.colliderect(bullrect):
+        if boss_rect.colliderect(bullrect) and (boss_disappear == False) :
             hit.play()
             missiles.pop(index1)
             healthvalue -= random.randint(5,20)
             
         index1 += 1
-    
     screen.blit(healthbar, (800, 5))
-    
     for health1 in range(healthvalue):
         screen.blit(health, (health1 + 803, 8))
         
-    if bossfire:
-        screen.blit(Boss_Fire,(226,63))
-        if fire_rect.colliderect(player_rect):
-            if player_hp <= 0:
-                CLK == 0
-            else :
-                player_hp -= 1
-                
+    for p in players:
+        player_rect = pygame.Rect(player.get_rect())
+        player_rect.right = p[1]
+        player_rect.top = p[2]
         
-    else:
-        screen.blit(Boss,(800,61))
+        
+    if random.randint(1,1000) >990:
+        if boss_disappear == False :
+            boss_disappear = True
+        else :
+            boss_disappear = False
+        
     screen.blit(playerrot, playerpos1)
-    
+    '''
     if event.type == KEYDOWN and event.key == K_q:
         bossfire=True
         
     if event.type == KEYUP and event.key ==K_q:
         bossfire=False
-
+    '''
     for event in pygame.event.get():
         
         if event.type == KEYDOWN:
