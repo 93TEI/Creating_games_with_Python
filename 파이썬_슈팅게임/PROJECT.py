@@ -1,4 +1,6 @@
-﻿import pygame, sys, math, random
+﻿from PyQt5.QtCore import * #1,2줄 
+from PyQt5.QtGui import *
+import pygame, sys, math, random
 from pygame.locals import *
 
 #게임 초기 설정
@@ -20,6 +22,7 @@ FPS_CLOCK = pygame.time.Clock()
 keys = [False, False, False, False]
 healthvalue = 194
 missiles=[]
+player_hp = 3 #3번 맞으면 죽는걸로
 boss_rect = pygame.Rect(800,150,500,300)
 fire_rect = pygame.Rect(300,90,600,300)
 
@@ -97,7 +100,8 @@ while Run:
     angle = math.atan2(position[1]-(playerpos[1]+32),position[0]-(playerpos[0]+26))
     playerrot = pygame.transform.rotate(player, 360-angle*57.29)
     playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
-    
+    fire_rect = pygame.Rect(Boss_Fire.get_rect())
+    player_rect = pygame.Rect(player.get_rect())
 
     for m in missiles:
         index = 0
@@ -132,6 +136,12 @@ while Run:
         
     if bossfire:
         screen.blit(Boss_Fire,(226,63))
+        if fire_rect.colliderect(player_rect):
+            if player_hp <= 0:
+                CLK == 0
+            else :
+                player_hp -= 1
+                
         
     else:
         screen.blit(Boss,(800,61))
