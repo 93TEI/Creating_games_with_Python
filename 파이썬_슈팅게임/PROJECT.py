@@ -28,6 +28,11 @@ boss_rect = pygame.Rect(800,150,500,300)
 fire_rect = pygame.Rect(300,90,600,300)
 boss_disappear = False
 
+fontObj = pygame.font.Font('project_resources/DejaVuSans.ttf', 32)
+textSurfaceObj = fontObj.render(str(pygame.time.get_ticks()), True, (255,0,0))
+textRectObj = textSurfaceObj.get_rect()
+textRectObj.center = (100, 16)
+
 #이미지 LOAD
 Background = pygame.image.load('project_resources/1.png')
 Background2 = pygame.image.load('project_resources/09.png')
@@ -98,9 +103,8 @@ while Run:
     else :
         screen.blit(Background2,(0,0))
         screen.blit(Boss,(800,61))
-        
-    
- 
+    textSurfaceObj = fontObj.render('Time : ' + str((25000 - pygame.time.get_ticks()) / 1000), True, (255,0,0))
+    screen.blit(textSurfaceObj, textRectObj)
 
             
     position = pygame.mouse.get_pos()
@@ -146,7 +150,7 @@ while Run:
         player_rect.top = p[2]
         
         
-    if random.randint(1,1000) >990:
+    if random.randint(1,1000) >985:
         if boss_disappear == False :
             boss_disappear = True
         else :
@@ -205,7 +209,7 @@ while Run:
     
      # WIN / LOSE 판별
         
-    if pygame.time.get_ticks() >= 30000: # lose
+    if pygame.time.get_ticks() >= 25000: # lose
         Run = 0
         CLK = 1
         
